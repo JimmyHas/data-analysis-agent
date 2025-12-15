@@ -25,7 +25,9 @@ data-analysis-agent/
 
 - Modular, agent-based architecture
 - Google BigQuery integration for scalable analytics
-- Data segmentation and trend analysis
+- Natural-language to SQL for general database questions
+- Schema & metadata Q&A (tables, columns, relationships, definitions)
+- Data segmentation and trend/seasonality analysis
 - In-memory chat history for context-aware CLI sessions
 - Easily extensible for new data sources or logic
 
@@ -36,7 +38,6 @@ data-analysis-agent/
 1. **Clone the repository:**
    ```sh
    git clone <your-repo-url>
-   cd data-analysis-agent
    ```
 
 2. **Create and activate a virtual environment (recommended):**
@@ -76,10 +77,6 @@ python main.py
 
 Type your data questions or requests. Type `exit` to quit. Each session maintains its own chat history in memory.
 
-#### Run a Single Prompt (Script Mode)
-
-```sh
-python main.py --once "Show me sales by region for last month"
 ```
 
 ---
@@ -92,6 +89,3 @@ python main.py --once "Show me sales by region for last month"
 
 ---
 
-## License
-
-This project is provided as-is for educational and research purposes.
