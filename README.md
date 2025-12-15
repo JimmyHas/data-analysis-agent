@@ -13,10 +13,10 @@ data-analysis-agent/
 ├── .env                     # Environment variables (API keys, project info)
 ├── README.md                # Project documentation
 └── src/
-    ├── agents.py            # Agent logic and orchestration
-    ├── big_query_runner.py  # BigQuery integration and execution
-    ├── service.py           # Service logic for data processing
-    └── tools.py             # Helper functions and action types
+	├── big_query_runner.py  # BigQuery integration and execution
+    ├── tools.py             # Helper functions and action types
+	├── agents.py            # Agent logic and orchestration
+	└── service.py           # Service logic for data processing
 ```
 
 ---
