@@ -56,7 +56,7 @@ def data_analysis_service(human_message, chat_history=None):
             'users': {'description': 'Customer demographics and information', 'schema': runner.get_table_schema('users')},
             'products': {'description': 'Product catalog and details', 'schema': runner.get_table_schema('products')},
         }
-        for _ in range(1):  # Add fallback loop in case of SQL failure
+        for _ in range(3):  # Add fallback loop in case of SQL failure
             try:
                 if action_results.action_type == UserActionType.DATABASE_QUERY:
                     sql_generation_results = sql_generator(model, {"question": action_results.action_description, "schema": schema, "chat_history": chat_history})
