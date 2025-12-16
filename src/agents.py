@@ -25,7 +25,11 @@ def action_identifier(model, input):
         """
     )
 
-    chain = prompt | model.bind_tools(tools=[UserAction], tool_choice=True) | PydanticToolsParser(tools=[UserAction], first_tool_only=True)
+    chain = (
+        prompt
+        | model.bind_tools(tools=[UserAction], tool_choice=True)
+        | PydanticToolsParser(tools=[UserAction], first_tool_only=True)
+    )
 
     action_results = chain.invoke(input=input)
 
@@ -49,7 +53,11 @@ def invalid_response_generator(model, input):
         """
     )
 
-    chain = prompt | model | StrOutputParser()
+    chain = (
+        prompt
+        | model
+        | StrOutputParser()
+    )
 
     reply = chain.invoke(input=input)
 
@@ -76,7 +84,11 @@ def metadata_response_generator(model, input):
         """
     )
 
-    chain = prompt | model | StrOutputParser()
+    chain = (
+        prompt
+        | model
+        | StrOutputParser()
+    )
 
     reply = chain.invoke(input=input)
 
@@ -121,7 +133,11 @@ def sql_generator(model, input):
         """
     )
 
-    chain = prompt | model.bind_tools(tools=[SQLAction], tool_choice=True) | PydanticToolsParser(tools=[SQLAction], first_tool_only=True)
+    chain = (
+        prompt
+        | model.bind_tools(tools=[SQLAction], tool_choice=True)
+        | PydanticToolsParser(tools=[SQLAction], first_tool_only=True)
+    )
     results = chain.invoke(input=input)
 
     return results
@@ -146,7 +162,11 @@ def sql_answer(model, input):
         """
     )
 
-    chain = prompt | model | StrOutputParser()
+    chain = (
+        prompt
+        | model
+        | StrOutputParser()
+    )
     answer_from_sql = chain.invoke(input=input)
 
     return answer_from_sql
@@ -212,7 +232,11 @@ def sql_generator_for_segmenation(model, input):
         """
     )
 
-    chain = prompt | model.bind_tools(tools=[SQLAction], tool_choice=True) | PydanticToolsParser(tools=[SQLAction], first_tool_only=True)
+    chain = (
+        prompt
+        | model.bind_tools(tools=[SQLAction], tool_choice=True)
+        | PydanticToolsParser(tools=[SQLAction], first_tool_only=True)
+    )
     results = chain.invoke(input=input)
 
     return results
@@ -326,14 +350,14 @@ def sql_generator_for_seasonality(model, input):
             Time-series aggregation (required):
             - Aggregate to the requested entity level AND requested time grain (e.g., day/week/month).
             - ALWAYS include:
-              (a) a single time key column (e.g., date/week_start/month_start) named `time_period`
-              (b) the entity_id if the question requires entity-level patterns (otherwise omit entity_id)
+            (a) a single time key column (e.g., date/week_start/month_start) named `time_period`
+            (b) the entity_id if the question requires entity-level patterns (otherwise omit entity_id)
             - Include only the minimal measures/features implied by the question:
-              - totals (SUM), counts (COUNT/COUNT DISTINCT), averages, min/max, first/last timestamps
+            - totals (SUM), counts (COUNT/COUNT DISTINCT), averages, min/max, first/last timestamps
             - Apply all implied filters (date windows, status, region, exclusions). Use @params for user-provided values.
             - Prefer a canonical time key:
-              - If the schema has a DATE column: use it (or DATE(timestamp_col)).
-              - If the schema has a TIMESTAMP/DATETIME: cast to DATE for day grain, or truncate for week/month grain.
+            - If the schema has a DATE column: use it (or DATE(timestamp_col)).
+            - If the schema has a TIMESTAMP/DATETIME: cast to DATE for day grain, or truncate for week/month grain.
 
             Output shape rules:
             - The output MUST be a compact aggregated table suitable for downstream trend/seasonality analysis.
@@ -346,7 +370,7 @@ def sql_generator_for_seasonality(model, input):
 
             Self-check BEFORE final output (must comply):
             1) Scan the SQL for qualified identifiers (e.g., schema.table or table.column, including backticked forms like `table.column`).
-               If found, REWRITE to remove the qualifier(s).
+            If found, REWRITE to remove the qualifier(s).
             2) Ensure every FROM/JOIN table token is exactly one unqualified table name from the schema-derived table list.
             3) Ensure no table identifier contains '.' anywhere.
 

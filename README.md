@@ -1,28 +1,8 @@
 # Data Analysis Agent
 
-A modular Python agent for automated data analysis, segmentation, and querying using Google BigQuery and generative AI. Designed for both interactive CLI and service-based use.
-
----
-
-## Project Structure
-
-```
-data-analysis-agent/
-├── main.py                  # Main CLI entry point
-├── requirements.txt         # Python dependencies
-├── .env                     # Environment variables (API keys, project info)
-├── README.md                # Project documentation
-└── src/
-	├── big_query_runner.py  # BigQuery integration and execution
-   ├── tools.py             # Helper functions and action types
-	├── agents.py            # Agent logic and orchestration
-	└── service.py           # Service logic for data processing
-```
-
----
+A conversational command-line tool for natural language data analysis using Google BigQuery and Gemini (Google Generative AI). This agent interprets user queries, generates SQL, runs analysis, and returns results in plain English.
 
 ## Features
-
 - Modular, agent-based architecture
 - Google BigQuery integration for scalable analytics
 - Natural-language to SQL for general database questions
@@ -31,15 +11,16 @@ data-analysis-agent/
 - In-memory chat history for context-aware CLI sessions
 - Easily extensible for new data sources or logic
 
----
+## Requirements
+- Python 3.9+
+- Google Cloud account with BigQuery access
+- Google Cloud service account credentials (for BigQuery)
 
-## Setup & Installation
-
+## Installation
 1. **Clone the repository:**
-   ```sh
-   git clone <your-repo-url>
-   ```
-
+	```sh
+	git clone <repo-url>
+	```
 2. **Create and activate a virtual environment (recommended):**
    ```sh
    python -m venv .venv
@@ -48,42 +29,39 @@ data-analysis-agent/
    # On Unix/Mac:
    source .venv/bin/activate
    ```
-
 3. **Install dependencies:**
-   ```sh
-   pip install -r requirements.txt
-   ```
-
-4. **Configure environment variables:**
-   - Edit `.env` and set your Google API key, project, dataset, and model name:
-     ```env
-     GOOGLE_AI_API_KEY=your-key
-     PROJECT_ID=your-gcp-project
-     DATASET_ID=your-bigquery-dataset
-     MODEL_NAME=your-model
-     ```
-
----
+	```sh
+	pip install -r requirements.txt
+	```
+4. **Set up Google Cloud credentials:**
+	- Ensure your environment is authenticated to access BigQuery (e.g., set `GOOGLE_APPLICATION_CREDENTIALS` to your service account JSON file).
+5. **Configure environment variables:**
+	- Edit the `.env` file with your API keys and project info:
+	  ```env
+	  GOOGLE_AI_API_KEY=your_google_ai_api_key
+	  PROJECT_ID=your_gcp_project_id
+	  DATASET_ID=your_bigquery_dataset_id
+	  MODEL_NAME=your_google_model
+	  ```
 
 ## Usage
-
-### 1. Run the CLI Agent
-
-Start an interactive chat session for data analysis:
-
+### Interactive Chat Mode
+Run the CLI and start chatting:
 ```sh
 python main.py
 ```
+- Type your data analysis question (e.g., "Show Top 20 users with most orders").
+- Type `exit` or `quit` to leave.
 
-Type your data questions or requests. Type `exit` to quit. Each session maintains its own chat history in memory.
+## Example Queries
+- "List all tables in the dataset."
+- "Segment customers by frequency and spend."
+- "Analyze seasonality in weekly orders for the last 2 years."
+- "Get columns and types for orders table."
 
----
-
-### 2. Customization
-
-- Extend BigQuery logic in `src/big_query_runner.py`
-- Add or modify agent logic in `src/agents.py`
-- Add new tools or action types in `src/tools.py`
-
----
-
+## How it Works
+1. **User Input:** You type a question in natural language.
+2. **Action Identification:** The agent classifies your intent (query, segmentation, trends, metadata, etc.).
+3. **SQL Generation:** If needed, the agent generates SQL for BigQuery.
+4. **Execution:** SQL is run on BigQuery; results are summarized.
+5. **Response:** The answer is returned in plain English.

@@ -21,6 +21,7 @@ class BigQueryRunner:
         except Exception as e:
             logging.error(f"Failed to initialize BigQuery client: {str(e)}")
             # raise
+            pass
     
     def execute_query(self, sql_query: str) -> pd.DataFrame:
         """Execute a SQL query and return results as a DataFrame.
@@ -43,6 +44,7 @@ class BigQueryRunner:
         except Exception as e:
             logging.error(f"BigQuery execution failed: {str(e)}")
             # raise 
+            pass
 
     def get_table_schema(self, table_name: str) -> List[Dict[str, Any]]:
         """Get schema information for a specific table.
@@ -69,3 +71,4 @@ class BigQueryRunner:
         except Exception as e:
             logging.error(f"Failed to get schema for table {table_name}: {str(e)}")
             # raise  
+            pass

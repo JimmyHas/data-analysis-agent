@@ -3,7 +3,9 @@ from enum import StrEnum
 
 
 class UserActionType(StrEnum):
-    """Enumeration of high-level actions the agent can perform."""
+    """
+    Enumeration of high-level actions the agent can perform.
+    """
     CHAT_INTERACTION = "chat_interaction"
     DATABASE_QUERY = "database_query"
     SEGMENTATION = "segmentation"
