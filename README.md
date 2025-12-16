@@ -77,8 +77,6 @@ python main.py
 
 Type your data questions or requests. Type `exit` to quit. Each session maintains its own chat history in memory.
 
-```
-
 ---
 
 ### 2. Customization

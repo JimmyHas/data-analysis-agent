@@ -16,7 +16,7 @@ from src.agents import sql_answer_for_seasonality
 
 from src.big_query_runner import BigQueryRunner
 
-# ______________Set-Up______________
+# Set-Up Environment
 _=load_dotenv()
 google_ai_api_key = os.getenv('GOOGLE_AI_API_KEY')
 project_id = os.getenv('PROJECT_ID')
@@ -56,20 +56,26 @@ def data_analysis_service(human_message, chat_history=None):
             'users': {'description': 'Customer demographics and information', 'schema': runner.get_table_schema('users')},
             'products': {'description': 'Product catalog and details', 'schema': runner.get_table_schema('products')},
         }
-        if action_results.action_type == UserActionType.DATABASE_QUERY:
-            sql_generation_results = sql_generator(model, {"question": action_results.action_description, "schema": schema, "chat_history": chat_history})
-            execution = runner.execute_query(sql_query=sql_generation_results.sql_query)
-            response = sql_answer(model, {"question": action_results.action_description, "sql_results": execution, "chat_history": chat_history})
-
-        elif action_results.action_type == UserActionType.SCHEMA_METADATA:
-            response = metadata_response_generator(model, {"query": action_results.action_description, "schema": schema, "chat_history": chat_history})
-        elif action_results.action_type == UserActionType.SEGMENTATION:
-            sql_generation_results = sql_generator_for_segmenation(model, {"question": action_results.action_description, "schema": schema, "chat_history": chat_history})
-            execution = runner.execute_query(sql_query=sql_generation_results.sql_query)
-            response = sql_answer_for_segmenation(model, {"question": action_results.action_description, "table": execution, "chat_history": chat_history})
-        elif action_results.action_type == UserActionType.SEASONALITY_TRENDS_PATTERNS:
-            sql_generation_results = sql_generator_for_seasonality(model, {"question": action_results.action_description, "schema": schema, "chat_history": chat_history})
-            execution = runner.execute_query(sql_query=sql_generation_results.sql_query)
-            response = sql_answer_for_seasonality(model, {"question": action_results.action_description, "table": execution, "chat_history": chat_history})
+        for _ in range(1):  # Add fallback loop in case of SQL failure
+            try:
+                if action_results.action_type == UserActionType.DATABASE_QUERY:
+                    sql_generation_results = sql_generator(model, {"question": action_results.action_description, "schema": schema, "chat_history": chat_history})
+                    execution = runner.execute_query(sql_query=sql_generation_results.sql_query)
+                    response = sql_answer(model, {"question": action_results.action_description, "sql_results": execution, "chat_history": chat_history})
+                elif action_results.action_type == UserActionType.SCHEMA_METADATA:
+                    response = metadata_response_generator(model, {"query": action_results.action_description, "schema": schema, "chat_history": chat_history})
+                elif action_results.action_type == UserActionType.SEGMENTATION:
+                    sql_generation_results = sql_generator_for_segmenation(model, {"question": action_results.action_description, "schema": schema, "chat_history": chat_history})
+                    execution = runner.execute_query(sql_query=sql_generation_results.sql_query)
+                    response = sql_answer_for_segmenation(model, {"question": action_results.action_description, "table": execution, "chat_history": chat_history})
+                elif action_results.action_type == UserActionType.SEASONALITY_TRENDS_PATTERNS:
+                    sql_generation_results = sql_generator_for_seasonality(model, {"question": action_results.action_description, "schema": schema, "chat_history": chat_history})
+                    execution = runner.execute_query(sql_query=sql_generation_results.sql_query)
+                    response = sql_answer_for_seasonality(model, {"question": action_results.action_description, "table": execution, "chat_history": chat_history})
+            except Exception as e:
+                response = """
+                    An error occurred while processing your request.
+                    Please try again!
+                """        
 
     return response
