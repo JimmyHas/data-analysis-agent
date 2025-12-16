@@ -323,7 +323,7 @@ def sql_generator_for_seasonality(model, input):
 
             Given:
             - a user question (seasonality/trends/patterns request)
-            - an authoritative schema
+            - a schema
 
             Chat history:
             {chat_history}
@@ -331,53 +331,37 @@ def sql_generator_for_seasonality(model, input):
             Return ONE BigQuery SELECT/WITH query that fetches ONLY the aggregated dataset needed to analyze
             seasonality/trends/patterns later (time-series analysis).
 
-            Absolute table naming rule (non-negotiable):
+            HARD RULES (MUST OBEY):
+            - Use ONLY tables/columns that exist in the provided schema. NEVER invent names.
+            - Table names in FROM/JOIN MUST be unqualified and contain NO '.' (e.g., `orders`, not project.dataset.orders).
+            If schema provides qualified names, strip qualifiers and use only the final segment.
+            - Wrap table names in backticks in FROM/JOIN. Use short, meaningful table aliases and reference columns via aliases.
+            - Any non-trivial SELECT expression MUST have `AS <alias>`.
+
+            ABSOLUTE TABLE NAMING RULE (non-negotiable):
             - ALL table references MUST be unqualified table names only (e.g., `orders`).
             - NEVER output dataset.table, schema.table, or project.dataset.table.
             - In FROM/JOIN, table identifiers MUST NOT contain a dot "." under any circumstance.
             - If the provided schema contains qualified names, you MUST strip the qualifiers and use only the final table name segment.
 
-            Hard rules:
-            - Use ONLY tables/columns present in the schema (after applying the “strip qualifiers” rule above). Do NOT invent names.
-            - Use backticks around table names in FROM/JOIN (e.g., FROM `orders` o).
-            - Use backticks for identifiers when needed.
-
-            Aliases (critical):
+            ALIAS (critical):
             - ALWAYS alias every table in FROM/JOIN with a short meaningful alias derived from the table name.
             - Use aliases consistently in SELECT/JOIN/WHERE/GROUP BY/ORDER BY.
             - If SELECT contains any expression that is not a single column reference, it MUST have "AS <alias>".
-
-            Time-series aggregation (required):
-            - Aggregate to the requested entity level AND requested time grain (e.g., day/week/month).
-            - ALWAYS include:
-            (a) a single time key column (e.g., date/week_start/month_start) named `time_period`
-            (b) the entity_id if the question requires entity-level patterns (otherwise omit entity_id)
-            - Include only the minimal measures/features implied by the question:
-            - totals (SUM), counts (COUNT/COUNT DISTINCT), averages, min/max, first/last timestamps
-            - Apply all implied filters (date windows, status, region, exclusions). Use @params for user-provided values.
-            - Prefer a canonical time key:
-            - If the schema has a DATE column: use it (or DATE(timestamp_col)).
-            - If the schema has a TIMESTAMP/DATETIME: cast to DATE for day grain, or truncate for week/month grain.
-
-            Output shape rules:
-            - The output MUST be a compact aggregated table suitable for downstream trend/seasonality analysis.
-            - Do NOT output raw row-level event data unless the question explicitly demands it.
-            - Order results by `time_period` ascending (and entity_id if present).
-
-            Ambiguity:
+            
+            AMBIGUITY:
             - If anything is ambiguous, make the smallest reasonable assumption and state it in sql_description.
             - If required fields/tables are missing, state the limitation in sql_description and output the closest valid query.
 
-            Self-check BEFORE final output (must comply):
-            1) Scan the SQL for qualified identifiers (e.g., schema.table or table.column, including backticked forms like `table.column`).
-            If found, REWRITE to remove the qualifier(s).
-            2) Ensure every FROM/JOIN table token is exactly one unqualified table name from the schema-derived table list.
-            3) Ensure no table identifier contains '.' anywhere.
+            SELF-CHECK:
+            - No qualified identifiers anywhere (no '.' in any table token).
+            - Ensure no table identifier contains '.' anywhere.
+            - Every FROM/JOIN table is a single schema table name (post-stripping).
 
             User question:
             {question}
 
-            Database schema (authoritative):
+            Database schema:
             {schema}
 
             Return a JSON object matching the SQLAction schema with these fields:

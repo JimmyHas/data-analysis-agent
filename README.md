@@ -55,8 +55,8 @@ python main.py
 
 ## Example Queries
 - "List all tables in the dataset."
-- "Segment customers by frequency and spend."
-- "Analyze seasonality in weekly orders for the last 2 years."
+- "Group customers into tiers based on total spend."
+- "Detect trend analysis on orders."
 - "Get columns and types for orders table."
 
 ## How it Works
