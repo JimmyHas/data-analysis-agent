@@ -14,7 +14,7 @@ data-analysis-agent/
 ├── README.md                # Project documentation
 └── src/
 	├── big_query_runner.py  # BigQuery integration and execution
-    ├── tools.py             # Helper functions and action types
+   ├── tools.py             # Helper functions and action types
 	├── agents.py            # Agent logic and orchestration
 	└── service.py           # Service logic for data processing
 ```
