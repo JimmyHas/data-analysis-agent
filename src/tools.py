@@ -1,11 +1,13 @@
-from pydantic import BaseModel, Field
 from enum import StrEnum
+
+from pydantic import BaseModel, Field
 
 
 class UserActionType(StrEnum):
     """
     Enumeration of high-level actions the agent can perform.
     """
+
     CHAT_INTERACTION = "chat_interaction"
     DATABASE_QUERY = "database_query"
     SEGMENTATION = "segmentation"
@@ -22,7 +24,7 @@ class UserAction(BaseModel):
     """
 
     action_description: str = Field(
-        description = (
+        description=(
             """
             A detailed natural-language summary of the user's request or goal.
             Write it so it can be passed directly to the selected tool.
@@ -37,7 +39,7 @@ class UserAction(BaseModel):
     )
 
     action_type: UserActionType = Field(
-        description = (
+        description=(
             """
             The category of user action to perform. Choose one of:
             - 'chat_interaction': off-topic/general chat; respond that the agent is DB-focused.
@@ -53,11 +55,13 @@ class UserAction(BaseModel):
         )
     )
 
+
 class SQLAction(BaseModel):
     """
     Structured output for SQL generation.
     The agent must output BigQuery Standard SQL (GoogleSQL).
     """
+
     sql_description: str = Field(
         description=(
             "Brief explanation of what the SQL does, including key tables, joins, and filters."

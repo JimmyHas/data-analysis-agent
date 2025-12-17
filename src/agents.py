@@ -1,9 +1,8 @@
+from langchain_core.output_parsers import PydanticToolsParser, StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.output_parsers import PydanticToolsParser
-from langchain_core.output_parsers import StrOutputParser
 
-from src.tools import UserAction
-from src.tools import SQLAction
+from src.tools import SQLAction, UserAction
+
 
 # ______________Agents______________
 def action_identifier(model, input):
@@ -35,6 +34,7 @@ def action_identifier(model, input):
 
     return action_results
 
+
 def invalid_response_generator(model, input):
     """
     Generates a response for off-topic or invalid requests. Uses chat_history from input if present.
@@ -53,15 +53,12 @@ def invalid_response_generator(model, input):
         """
     )
 
-    chain = (
-        prompt
-        | model
-        | StrOutputParser()
-    )
+    chain = prompt | model | StrOutputParser()
 
     reply = chain.invoke(input=input)
 
     return reply
+
 
 def metadata_response_generator(model, input):
     """
@@ -84,15 +81,12 @@ def metadata_response_generator(model, input):
         """
     )
 
-    chain = (
-        prompt
-        | model
-        | StrOutputParser()
-    )
+    chain = prompt | model | StrOutputParser()
 
     reply = chain.invoke(input=input)
 
     return reply
+
 
 def sql_generator(model, input):
     """
@@ -142,6 +136,7 @@ def sql_generator(model, input):
 
     return results
 
+
 def sql_answer(model, input):
     """
     Answers a user question using SQL results. Uses chat_history from input if present.
@@ -162,14 +157,11 @@ def sql_answer(model, input):
         """
     )
 
-    chain = (
-        prompt
-        | model
-        | StrOutputParser()
-    )
+    chain = prompt | model | StrOutputParser()
     answer_from_sql = chain.invoke(input=input)
 
     return answer_from_sql
+
 
 def sql_generator_for_segmenation(model, input):
     """
@@ -311,6 +303,7 @@ def sql_answer_for_segmenation(model, input):
     answer_from_sql = chain.invoke(input=input)
 
     return answer_from_sql
+
 
 def sql_generator_for_seasonality(model, input):
     """
