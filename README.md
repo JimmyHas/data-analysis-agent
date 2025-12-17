@@ -34,7 +34,7 @@ A conversational command-line tool for natural language data analysis using Goog
 	pip install -r requirements.txt
 	```
 4. **Set up Google Cloud credentials:**
-	- Ensure your environment is authenticated to access BigQuery (e.g., set `GOOGLE_APPLICATION_CREDENTIALS` to your service account JSON file).
+	- Ensure your environment is authenticated to access BigQuery
 5. **Configure environment variables:**
 	- Edit the `.env` file with your API keys and project info:
 	  ```env
